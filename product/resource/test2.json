@@ -1,0 +1,20 @@
+{
+    "events": [
+        {
+            "package": "product.event.demo_event",
+            "name": "DemoEvent1",
+            "args": {"devices": ["ap1"]},
+            "background": false,
+            "start_time": "2020-3-13 18:59:00",
+            "loop": 1
+        },
+        {
+            "package": "product.event.demo_event",
+            "name": "DemoEvent2",
+            "args": {"devices": ["sta1"]},
+            "background": true,
+            "start_time": "2020-3-13 18:59:00",
+            "interval": 60
+        }
+    ]
+}

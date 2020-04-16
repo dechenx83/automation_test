@@ -1,0 +1,7 @@
+{
+  "root": "product",
+  "api_base_file": ["product.restapi.common.apicall", "ApiCallBase"],
+  "protocol": "http",
+  "host_ip_string": "api-gateway",
+  "code_for_case": ["20X","400", "401", "403", "404", "500"]
+}

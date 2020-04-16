@@ -1,0 +1,126 @@
+openapi: 3.0.0
+info:
+  description: This is demo yaml
+  version: '1.0.0'
+  title: demo yaml
+
+servers:
+  - description: target server
+    url: 'http://127.0.0.1:5000/rest/'
+
+paths:
+  /product:
+    get:
+      summary: Get product information
+      description: the product information
+      tags:
+        - Product
+      responses:
+        '200':
+          description: 'Successfully get product info'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductInfoList'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Add new Product
+      tags:
+        - Product
+      resquestBody:
+        description: The product information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductAddInfo'
+      responses:
+        '201':
+          description: Successfully added the product
+          content:
+            application/json:
+              schema:
+                description: 'the added product id'
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/400'
+        '500':
+          $ref: '#/components/responses/500'
+
+components:
+  schemas:
+    ProductAddInfo:
+      description: the new added product info
+      type: object
+      required:
+        - name
+        - price
+        - catagory
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        catagory:
+          type: string
+
+    ProductInfo:
+      description: the product information
+      type: object
+      required:
+        - id
+        - name
+        - price
+        - catagory
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        catagory:
+          type: string
+
+    ProductInfoList:
+      description: The product list
+      type: object
+      required:
+        - products
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductInfo'
+
+    ErrorResponse:
+      description: The error response
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+  responses:
+    '400':
+      description: 'wrong parameters'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    '500':
+      description: 'Internal Error'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+
+
+

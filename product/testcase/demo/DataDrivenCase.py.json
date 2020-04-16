@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "header": "Test Data Section 1",
+      "test_value": "Test %(var)s 1"
+    },
+    {
+      "header": "Test Data Section 2",
+      "test_value": "Test %(var)s 2"
+    }
+  ]
+}

@@ -1,0 +1,867 @@
+openapi: 3.0.0
+info:
+  title: VxRail Support Management
+  description: APIs for support management
+  version: 1.0.0
+servers:
+- url: htps://vxm-ip/rest/vxm
+  description: VxRail Manager Server
+security:
+- basicAuth: []
+paths:
+  /v1/support/heartbeat:
+    get:
+      tags:
+      - Heartbeat
+      summary: Get the last heartbeat status and system configuration report.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeartbeatInfo'
+              example:
+                id: 1,
+                status: SUCCESS,
+                target: Appliance-EMCVB150600013,
+                beginTime: 2017-11-17T05:18:33.039Z,
+                endTime: 2017-11-17T05:18:33.098Z,
+                message: OK,
+                data: the content of heartbeat syr configuration
+        401:
+          description: The request requires user authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: The provided vCenter credentials are not valid.
+        403:
+          description: The server understood the request, but is refusing to fulfill
+            it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Access Denied.
+  /v1/support/kb:
+    get:
+      tags:
+      - KnowledgeBase
+      summary: Query KnowledgeBase.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBaseInfo'
+              example:
+                homeURL: https://support.emc.com/products/39970_VxRail-Appliance
+                articlesLink: /rest/vxm/v1/support/kb/articles
+        401:
+          description: The request requires user authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: The provided vCenter credentials are not valid.
+        403:
+          description: The server understood the request, but is refusing to fulfill
+            it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Access Denied.
+  /v1/support/kb/articles:
+    get:
+      tags:
+      - KnowledgeBase
+      summary: Query articles from KnowledgeBase.
+      parameters:
+      - name: searchText
+        in: query
+        description: The content the user wants to search.
+        required: false
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          default: '*'
+      - name: limit
+        in: query
+        description: The number of articles the user wants to query.
+        required: false
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 3
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleInfo'
+              example:
+              - id: ka1f1000000GBiEAAW
+                title: Some useful PSQL commands for the VxRail
+                url: https://support.emc.com/kb/479126
+                date: 1537401600000
+                products: VxRail Appliance Series,VxRail Appliance Family
+                audience: Level 40 = Employees and Partners
+              - id: ka2f1000000GBiEAAW
+                title: How to manually import vCenter SSL certificate
+                url: https://support.emc.com/kb/479127
+                author: Someone
+                date: 1537401600000
+                products: VxRail Appliance Series,VxRail Appliance Family
+                audience: Level 40 = Employees and Partners
+        400:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/400
+              example:
+                message: Invalid limit {0}.
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                IncorrectSupportAccout:
+                  value:
+                    error-code: 1
+                    message: Invalid suppport account.
+                InvalidKBData:
+                  value:
+                    error-code: 8
+                    message: Unable to fetch or parse the articles data from support.emc.com.
+                NetworkIssue:
+                  value:
+                    error-code: 21
+                    message: Network issue.
+                DarksiteForbiden:
+                  value:
+                    message: This feature may be unavailable because VxRail Manager
+                      is disconnected from the Internet.
+  /v1/support/community:
+    get:
+      tags:
+      - Community
+      summary: Query Community.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityInfo'
+              example:
+                homeURL: https://community.emc.com/community/products/vxrail
+                messagesLink: /rest/vxm/v1/support/community/messages
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+  /v1/support/community/messages:
+    get:
+      tags:
+      - Community
+      summary: Query messages from community.
+      parameters:
+      - name: limit
+        in: query
+        description: The number of messages the user wants to query.
+        required: false
+        allowEmptyValue: true
+        style: form
+        explode: true
+        schema:
+          type: integer
+          default: 3
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageInfo'
+              example:
+              - id: 242813
+                type: discussion
+                title: VxRail 3.5 Installation Question
+                url: https://community.emc.com/thread/242813
+                author: benoitbernard-de
+                date: 1537401600000
+                tags:
+                - vxrail
+                status: published
+                viewCount: 78
+                replyCount: 1
+                resolved: open
+              - id: 242814
+                type: discussion
+                title: VxRail 3.5 Installation Question
+                url: https://community.emc.com/thread/242813
+                author: benoitbernard-de
+                date: 1537401600000
+                tags:
+                - vxrail
+                status: published
+                viewCount: 78
+                replyCount: 1
+                resolved: open
+        400:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/400
+              example:
+                message: Invalid limit {0}.
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                InvalidMessageData:
+                  value:
+                    message: Unable to fetch or parse the messages data from community.emc.com.
+                DarksiteForbiden:
+                  value:
+                    message: This feature may be unavailable because VxRail Manager
+                      is disconnected from the Internet.
+  /v1/support/account:
+    get:
+      tags:
+      - Powerlink account
+      summary: Query support account.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportAccountInfo'
+              example:
+                username: vxrail.test@emconlinesupport.com
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        404:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/404
+        500:
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              example:
+                message: Network connection timed out.
+    put:
+      tags:
+      - Powerlink account
+      summary: Update support account.
+      requestBody:
+        description: The username and password of the support account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportAccountSpec'
+        required: true
+      responses:
+        200:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/200
+        400:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/400
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        404:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/404
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                NetworkTimeout:
+                  value:
+                    message: Network connection timed out.
+                DarksiteForbiden:
+                  value:
+                    message: This feature may be unavailable because VxRail Manager
+                      is disconnected from the Internet.
+    post:
+      tags:
+      - Powerlink account
+      summary: Setup support account.
+      requestBody:
+        description: The username and password of the support account.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportAccountSpec'
+        required: true
+      responses:
+        200:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/200
+        400:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/400
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                NetworkTimeout:
+                  value:
+                    message: Network connection timed out.
+                DarksiteForbiden:
+                  value:
+                    message: This feature may be unavailable because VxRail Manager
+                      is disconnected from the Internet.
+    delete:
+      tags:
+      - Powerlink account
+      summary: Forget support account.
+      responses:
+        200:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/200
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                NetworkTimeout:
+                  value:
+                    message: Network connection timed out.
+                DarksiteForbiden:
+                  value:
+                    message: This feature may be unavailable because VxRail Manager
+                      is disconnected from the Internet.
+  /v1/support/logs:
+    get:
+      tags:
+      - Log
+      summary: Query all of the logs.
+      parameters:
+      - name: $filter
+        in: query
+        description: |-
+          Query conditions for logs.
+          Equal(eq), and not equal(ne) supported fields: id, path, types, nodes. In addition, types and nodes are collection condition fields, which mean the value is equal though the sequence is different. For example, 'node1, node2, node3' is equal to 'node3, node2, node1'.
+          Equal(eq), not equal(ne), in(in), greater than(gt), less than(lt), greater or equal to(ge) and less or equal to(le) supported fields: creation_time, size.
+          Example: $filter=id eq 'VxRail_Support_Bundle_52fd1cfc-4646-8a7d-d4ba-721c3da3808e_2018_10_08_08_30_44' and nodes eq 'node1, node2, node3' and  creation_time gt 10000.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogInfo'
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+    post:
+      tags:
+      - Log
+      summary: Collect the log with the specifed type(s).
+      requestBody:
+        description: The types of the log to collect.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogSpec'
+        required: true
+      responses:
+        202:
+          description: The request has been accepted for processing, but the processing
+            has not been completed.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/202
+              example:
+                request_id: 9c50511f-9119-4351-83e0-38ce0a93c73e
+        400:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/400
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        409:
+          description: The log collection is running. Please wait for a while and
+            then retry.
+        500:
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+              examples:
+                GeneralDescription:
+                  value:
+                    error-code: 1
+                    message: Unexpected internal server error.
+                InsufficientCapacity:
+                  value:
+                    error-code: 2
+                    message: Insufficient storage capacity.
+  /v1/support/logs/{logId}:
+    get:
+      tags:
+      - Log
+      summary: Query the log by logId.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInfo'
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        404:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/404
+        500:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+    parameters:
+    - name: logId
+      in: path
+      description: the specific log user want to query
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+  /v1/support/logs/{logId}/download:
+    get:
+      tags:
+      - Log
+      summary: Download the binary stream of a log.
+      responses:
+        200:
+          description: Successul Operation.
+          content:
+            application/octet-stream:
+              schema:
+                $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/200
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        404:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/404
+    parameters:
+    - name: logId
+      in: path
+      description: Unique indentifier of a log.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+  /v1/support/service-requests:
+    get:
+      tags:
+      - Service Request
+      summary: Query a list of URI to create service request.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceRequestInfo'
+              example:
+              - url: http://uemconnect.emc.com/servicecenter/createsr.htm?serialNo=VXRAILVIP470F601&type=Support
+                appliance_psnt: VXRAILVIP470F601
+              - url: http://uemconnect.emc.com/servicecenter/createsr.htm?serialNo=VXRAILVIP470F602&type=Support
+                appliance_psnt: VXRAILVIP470F602
+              - url: http://uemconnect.emc.com/servicecenter/createsr.htm?serialNo=VXRAILVIP470F603&type=Support
+                appliance_psnt: VXRAILVIP470F603
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+  /v1/support/chat-url:
+    get:
+      tags:
+      - Chat
+      summary: Query url to chat.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatInfo'
+              example:
+                url: http://uemconnect.emc.com/servicecenter/liveChat.htm?serialNo=EMCVB150600013&type=Support
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+  /v1/support/contact:
+    get:
+      tags:
+      - Support contact info.
+      description: Query support contact info.
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportContactInfo'
+              example:
+                first_name: VxRail
+                last_name: Emc
+                email: vxrailtest@emconlinesupport.com
+                company: EMC CORP - PARTNER
+                phone: 1508435-1000
+                site_id:
+                - "12728783"
+        401:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/401
+        403:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/403
+        500:
+          $ref: http://vxrswaggerhub.cec.lab.emc.com/v1/domains/VxRail/common-model/1.0.0#/components/responses/500
+components:
+  schemas:
+    LogSpec:
+      required:
+      - types
+      type: object
+      properties:
+        types:
+          type: array
+          description: Unique identifier of a log
+          items:
+            type: string
+            enum:
+            - vxm
+            - vcenter
+            - esxi
+            - idrac
+            - ptagent
+            - witness
+        nodes:
+          type: array
+          description: The serial numbers of nodes are specified.
+          items:
+            type: string
+        autoclean:
+          type: boolean
+          description: The option to enable/disable log bundle auto clean if the capacity
+            of VxRail Manager is enough.
+      description: The types and nodes for log bundle collection.
+    SupportAccountSpec:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the support account.
+        password:
+          type: string
+          description: The password of the support account.
+      description: Powerlink account which will be persisted in VxManager Database.
+    HeartbeatInfo:
+      required:
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          description: id of heartbeat
+        status:
+          type: string
+          description: status of heartbeat
+          enum:
+          - SUCCESS
+          - FAIL
+          - ESRS_INACTIVE
+        beginTime:
+          type: string
+          description: begin time of heartbeat
+          format: date-time
+        endTime:
+          type: string
+          description: end time of heartbeat
+          format: date-time
+        message:
+          type: string
+          description: message of heartbeat status
+        data:
+          type: string
+          description: the content of hearbeat syr configuration
+      description: The information about heartbeat, including the status and syr data.
+    KnowledgeBaseInfo:
+      required:
+      - homeURL
+      type: object
+      properties:
+        homeURL:
+          type: string
+          description: home URL of EMC Support Site for VxRail
+        articlesLink:
+          type: string
+          description: link to articles
+    ArticleInfo:
+      required:
+      - author
+      - date
+      - id
+      - title
+      - url
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of Article
+        title:
+          type: string
+          description: title of Article
+        url:
+          type: string
+          description: url of Article
+        author:
+          type: string
+          description: author of Article
+        date:
+          type: integer
+          description: date of Article
+        products:
+          type: string
+          description: products of Article
+        audience:
+          type: string
+          description: audience of Article
+      description: The article in KnowledgeBase.
+    CommunityInfo:
+      required:
+      - homeURL
+      type: object
+      properties:
+        homeURL:
+          type: string
+          description: home URL of EMC Community Site for VxRail
+        messagesLink:
+          type: string
+          description: link to messages
+    MessageInfo:
+      required:
+      - author
+      - date
+      - id
+      - title
+      - type
+      - url
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of Message
+        type:
+          type: string
+          description: type of Message
+        title:
+          type: string
+          description: title of Message
+        url:
+          type: string
+          description: url of Message
+        author:
+          type: string
+          description: author of Message
+        date:
+          type: integer
+          description: date of Message
+        tags:
+          type: array
+          description: tags of Message
+          items:
+            type: string
+        status:
+          type: string
+          description: status of Message
+        viewCount:
+          type: integer
+          description: viewCount of Message
+        replyCount:
+          type: integer
+          description: replyCount of Message
+        resolved:
+          type: string
+          description: resolve status of Message
+      description: The message in Community.
+    SupportAccountInfo:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+          description: The username of the support account.
+        password:
+          type: string
+          description: The password of the support account.
+      description: Powerlink account which will be persisted in VxManager Database.
+    LogInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of a log
+        types:
+          type: string
+          description: The types of the log
+          enum:
+          - vxm
+          - vcenter
+          - esxi
+          - idrac
+          - ptagent
+          - witness
+        nodes:
+          type: array
+          description: The serial number of nodes
+          items:
+            type: string
+            example: '["JHN3S62","JHN1H62","JHN1BC2"]'
+        creation_time:
+          type: integer
+          description: Define the creation time of the log
+        path:
+          type: string
+          description: The filepath of the log
+        size:
+          type: integer
+          description: The size of the log
+        details:
+          type: array
+          description: The detailed info of generated log bundle.
+          items:
+            type: string
+            example: '["Failed to generate idrac log bundle on JHN3S62 due to the
+              node is not idrac log supported.","Failed to generate esxi log bundle
+              on JHN1BC2 due to the node is disconnected."]'
+      description: The information about the log.
+    ServiceRequestInfo:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url for service request.
+        appliance_psnt:
+          type: string
+      description: The url for service request.
+    SupportContactInfo:
+      required:
+      - company
+      - email
+      - first_name
+      - last_name
+      - phone
+      - site_id
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        company:
+          type: string
+        phone:
+          type: string
+        site_id:
+          type: array
+          items:
+            type: string
+        default_site_id:
+          type: string
+    ChatInfo:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The url for chat.
+      description: Chat information
+    ErrorResponse:
+      required:
+      - message
+      type: object
+      properties:
+        error_code:
+          type: integer
+          format: int32
+        message:
+          type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

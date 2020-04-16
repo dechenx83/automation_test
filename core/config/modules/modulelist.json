@@ -1,0 +1,10 @@
+{
+    "modules": [
+        {
+            "name": "DemoModule",
+            "package": "product.logicmodules.demo",
+            "setting_file": null,
+            "setting_path": null
+        }
+    ]
+}

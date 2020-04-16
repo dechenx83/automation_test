@@ -1,0 +1,241 @@
+{
+    "devices": {
+        "server1": {
+            "name": "server1",
+            "type": "linux_server",
+            "host": "192.168.1.19",
+            "port": 22,
+            "username": "emc",
+            "password": "Password123!",
+            "conn_type": "ssh",
+            "ports": {}
+        },
+
+        "ap1": {
+            "name": "ap1",
+            "type": "AP",
+            "description": null,
+            "pre_connect": false,
+            "ports": {
+                "ETH1/1": {
+                    "parent": "ap1",
+                    "type": "ETH",
+                    "name": "ETH1/1",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "trafficGen",
+                            "port": "PORT1/1/1"
+                        }
+                    ]
+                },
+                "ETH1/2": {
+                    "parent": "ap1",
+                    "type": "ETH",
+                    "name": "ETH1/2",
+                    "description": null,
+                    "remote_ports": []
+                },
+                "WIFI": {
+                    "parent": "ap1",
+                    "type": "WIFI",
+                    "name": "WIFI",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "sta1",
+                            "port": "WIFI"
+                        },
+                        {
+                            "device": "sta2",
+                            "port": "WIFI"
+                        },
+                        {
+                            "device": "sta3",
+                            "port": "WIFI"
+                        }
+                    ]
+                }
+            }
+        },
+        "sta1": {
+            "name": "sta1",
+            "type": "STA",
+            "description": null,
+            "pre_connect": false,
+            "ports": {
+                "WIFI": {
+                    "parent": "sta1",
+                    "type": "WIFI",
+                    "name": "WIFI",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "ap1",
+                            "port": "WIFI"
+                        }
+                    ]
+                },
+                "ETH1/1": {
+                    "parent": "sta1",
+                    "type": "ETH",
+                    "name": "ETH1/1",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "trafficGen",
+                            "port": "PORT1/1/2"
+                        }
+                    ]
+                },
+                "ETH1/2": {
+                    "parent": "sta1",
+                    "type": "ETH",
+                    "name": "ETH1/2",
+                    "description": null,
+                    "remote_ports": []
+                }
+            }
+        },
+        "sta2": {
+            "name": "sta2",
+            "type": "STA",
+            "description": null,
+            "pre_connect": false,
+            "ports": {
+                "WIFI": {
+                    "parent": "sta2",
+                    "type": "WIFI",
+                    "name": "WIFI",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "ap1",
+                            "port": "WIFI"
+                        }
+                    ]
+                },
+                "ETH1/1": {
+                    "parent": "sta2",
+                    "type": "ETH",
+                    "name": "ETH1/1",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "trafficGen",
+                            "port": "PORT1/1/3"
+                        }
+                    ]
+                },
+                "ETH1/2": {
+                    "parent": "sta2",
+                    "type": "ETH",
+                    "name": "ETH1/2",
+                    "description": null,
+                    "remote_ports": []
+                }
+            }
+        },
+        "sta3": {
+            "name": "sta3",
+            "type": "STA",
+            "description": null,
+            "pre_connect": false,
+            "ports": {
+                "WIFI": {
+                    "parent": "sta3",
+                    "type": "WIFI",
+                    "name": "WIFI",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "ap1",
+                            "port": "WIFI"
+                        }
+                    ]
+                },
+                "ETH1/1": {
+                    "parent": "sta3",
+                    "type": "ETH",
+                    "name": "ETH1/1",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "trafficGen",
+                            "port": "PORT1/1/4"
+                        }
+                    ]
+                },
+                "ETH1/2": {
+                    "parent": "sta3",
+                    "type": "ETH",
+                    "name": "ETH1/2",
+                    "description": null,
+                    "remote_ports": []
+                }
+            }
+        },
+        "trafficGen": {
+            "name": "trafficGen",
+            "type": "TrafficGen",
+            "description": null,
+            "pre_connect": false,
+            "ports": {
+                "PORT1/1/1": {
+                    "parent": "trafficGen",
+                    "type": "ETH",
+                    "name": "PORT1/1/1",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "ap1",
+                            "port": "ETH1/1"
+                        }
+                    ],
+                    "speed": 1000
+                },
+                "PORT1/1/2": {
+                    "parent": "trafficGen",
+                    "type": "ETH",
+                    "name": "PORT1/1/2",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "sta1",
+                            "port": "ETH1/1"
+                        }
+                    ],
+                    "speed": 1000
+                },
+                "PORT1/1/3": {
+                    "parent": "trafficGen",
+                    "type": "ETH",
+                    "name": "PORT1/1/3",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "sta2",
+                            "port": "ETH1/1"
+                        }
+                    ],
+                    "speed": 1000
+                },
+                "PORT1/1/4": {
+                    "parent": "trafficGen",
+                    "type": "ETH",
+                    "name": "PORT1/1/4",
+                    "description": null,
+                    "remote_ports": [
+                        {
+                            "device": "sta3",
+                            "port": "ETH1/1"
+                        }
+                    ],
+                    "speed": 1000
+                }
+            }
+        }
+    },
+    "info": {},
+    "reserved": null
+}

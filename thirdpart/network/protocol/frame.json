@@ -1,0 +1,5 @@
+{
+  "field1": {"offset": 0, "length": 2,"type": "int"},
+  "field2": {"offset": 2, "length": 4, "type": "string"},
+  "field3": {"offset": 6, "length": 2, "type": "int"}
+}

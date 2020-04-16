@@ -1,0 +1,10 @@
+{
+    "name": "A Demo Test List",
+    "description": "Description",
+    "setting_path": "",
+    "cases": [
+        "product.testcase.demo.helloworld.HelloWorldTest"
+    ],
+    "sublist": []
+}
+

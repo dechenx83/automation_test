@@ -1,0 +1,5 @@
+flask-restplus==0.13.0
+requests
+urllib3
+pyyaml
+paramiko

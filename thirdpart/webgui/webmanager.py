@@ -23,7 +23,7 @@ class WebExplorer:
 
     def init_driver(self):
         if self.type == "firefox":
-            self.init_driver()
+            self._init_firefox()
         elif self.type == "chrome":
             self._init_chrome()
         elif self.type == "random":

@@ -30,9 +30,3 @@ class HelloWorldTest(TestCaseBase):
     class HelloWorldTestSetting(TestSettingBase):
         case_setting1 = "setting1"
         case_setting2 = 20
-
-
-if __name__ == '__main__':
-    cs = HelloWorldTest(None)
-    cs.get_setting("")
-    print(cs.setting)

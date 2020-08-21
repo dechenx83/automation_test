@@ -19,4 +19,7 @@ load_settings(args.setting)
 init_engine()
 load_resource(args.resource, args.user)
 load_test_list(args.testlist)
-run_test()
+
+
+if __name__ == '__main__':
+    run_test()

@@ -2,6 +2,6 @@
     "random_seed": 0,
     "skip_if_high_priority_failed": true,
     "follow_priority": true,
-    "run_type": 1,
+    "run_type": 255,
     "priority_to_run": []
 }

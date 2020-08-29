@@ -35,7 +35,7 @@
 
 执行 userinterface下的start.py文件
 
-$python3 start.py -s settingfile -t /Users/dechen/workspace/automation_test/example/demo_list.testlist -r /Users/dechen/workspace/automation_test/example/resource.json -u dechen
+$python3 start.py -s settingfile -t ../example/demo_list.testlist -r ../example/resource.json -u dechen
 其中，-s settingfile指定了配置文件的路径，第一次执行会自动建立
 
 如果一切正常，可以看到执行结果。

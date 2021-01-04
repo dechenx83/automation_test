@@ -111,7 +111,7 @@ class CaseEntry(NodeEntry):
         self.update_result()
         head_str = self.__str__()
         if len(head_str) > headline_max:
-            head_str = head_str[0, headline_max] + "..."
+            head_str = head_str[0: headline_max] + "..."
         space_count = width - indent - len(head_str)
         ret = (" " * indent) + head_str + ("-" * space_count) + self.result.value.upper()
         return ret

@@ -257,7 +257,7 @@ class ResultReporter:
     def add_list(self, list_name):
         self.recent_node = self.recent_node.add_child(header=list_name,
                                                       node_type=NodeType.TestList)
-        self.recent_case = self.recent_node
+        self.recent_list = self.recent_node
         self._log_info(f"[Test list] {list_name}")
 
     @locker(my_lock)
@@ -341,6 +341,31 @@ if __name__ == "__main__":
 
     # 第二个测试用例
     rr.add_test("Test Case 2")
+    rr.add_step_group("SETUP")
+    rr.add(StepResult.PASS, "Do Something Setup", "I'm doing something")
+    rr.end_step_group()
+
+    rr.add_step_group("TEST")
+    rr.add_step_group("Login to website")
+    rr.add(StepResult.PASS, "Input Username", "Username is admin")
+    rr.add(StepResult.PASS, "Input Password", "Password is admin")
+    rr.end_step_group()
+    rr.end_test()
+    rr.add_list("Sub Test List")
+    rr.add_test("Test Case 3")
+    rr.add_step_group("SETUP")
+    rr.add(StepResult.PASS, "Do Something Setup", "I'm doing something")
+    rr.end_step_group()
+
+    rr.add_step_group("TEST")
+    rr.add_step_group("Login to website")
+    rr.add(StepResult.PASS, "Input Username", "Username is admin")
+    rr.add(StepResult.PASS, "Input Password", "Password is admin")
+    rr.end_step_group()
+    rr.end_test()
+    rr.end_list()
+
+    rr.add_test("Test Case 4")
     rr.add_step_group("SETUP")
     rr.add(StepResult.PASS, "Do Something Setup", "I'm doing something")
     rr.end_step_group()

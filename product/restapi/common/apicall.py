@@ -8,9 +8,13 @@ class ApiCallBase:
         self.url = f"{protocol}://{host}:{port}/{base_url}"
         self.auth = auth
         self.header = [{"Content-Type": "application/json"}]
+        # 使用tortilla来进行包装
         self.api = tortilla.wrap(self.url, headers=self.header)
 
     def call(self, method, url, **kwargs):
+        """
+        直接使用requests中的方法来调用
+        """
         m = getattr(requests, method)
         if method in ['get', 'delete']:
             response = m(self.url + url, auth=self.auth, header=self.header)

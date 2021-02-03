@@ -2,6 +2,7 @@
 The Rest Schema Creator to create the schema framework
 and API Call Method
 """
+import re
 from .settings import SETTING
 from .openapi import change_to_camel
 from .creator import ObjectCreator
@@ -167,6 +168,7 @@ class ApiCallGenerator(ObjectCreator):
         # init method
         init_method = codedom.MethodDefineStatement("__init__", codedom.SelfExpression(),
                                                     codedom.ParameterDefineExpression("host"),
+                                                    codedom.ParameterDefineExpression("port"),
                                                     codedom.ParameterDefineExpression("auth"))
 
         # get server url
@@ -174,15 +176,21 @@ class ApiCallGenerator(ObjectCreator):
         protocol = "http"
         if url.lower().startswith("https"):
             protocol = "https"
-        if SETTING["host_ip_string"] in url:
-            url = url[url.find(SETTING["host_ip_string"]) + len(SETTING["host_ip_string"]) + 1:]
+        base_url = re.findall("http://.+?/(.+)", url)
+        if not any(url):
+            base_url = re.findall("https://.+?/(.+)", url)
+        if not any(url):
+            base_url = url
+        else:
+            base_url = base_url[0]
         init_method.body.append(
             codedom.ExpressionStatement(
                 codedom.MethodInvokeExpression(
                     "__init__",
                     codedom.VariableInvokeExpression("host"),
+                    codedom.VariableInvokeExpression("port"),
+                    codedom.ConstInvokeExpression(base_url),
                     codedom.VariableInvokeExpression("auth"),
-                    codedom.ConstInvokeExpression(url),
                     codedom.ConstInvokeExpression(protocol),
                     instance=codedom.InstanceCreationExpression("super")
                 )
@@ -227,9 +235,6 @@ class ApiCallGenerator(ObjectCreator):
             rv.args.append(
                 codedom.ParameterDefineExpression(param.replace("$", ""), codedom.NoneExpression())
             )
-        rv.args.append(
-            codedom.ParameterDefineExpression("new_session", codedom.TrueExpression())
-        )
         rv.doc = codedom.DocStatement([
             f"Summary: {method.summary}",
             f"Description: {method.description}",
@@ -371,9 +376,6 @@ class ApiCallGenerator(ObjectCreator):
             call_method.arg_list.append(
                 codedom.ParameterDefineExpression("data", codedom.VariableInvokeExpression("call_data"))
             )
-        call_method.arg_list.append(
-            codedom.ParameterDefineExpression("new_session", codedom.VariableInvokeExpression("new_session"))
-        )
         rv.body.append(
             codedom.ExpressionStatement(
                 codedom.AssignExpression(

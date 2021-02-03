@@ -1,4 +1,5 @@
 import requests
+import tortilla
 from product.restapi.common.schemabase import SchemaBase
 
 
@@ -7,6 +8,7 @@ class ApiCallBase:
         self.url = f"{protocol}://{host}:{port}/{base_url}"
         self.auth = auth
         self.header = [{"Content-Type": "application/json"}]
+        self.api = tortilla.wrap(self.url, headers=self.header)
 
     def call(self, method, url, **kwargs):
         m = getattr(requests, method)

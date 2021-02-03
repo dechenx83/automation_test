@@ -4,7 +4,7 @@
     Swagger File: product.yaml
     Description: The Object Report for the API Definition
     API Doc Version: 1.0.0
-    Date: 2020-04-16 16:48:10,
+    Date: 2021-02-03 20:00:10,
 
 """
 from product.restapi.common.schemabase import SchemaBase, response_schema

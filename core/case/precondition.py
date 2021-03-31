@@ -79,6 +79,7 @@ class IsPreCasePassed(PreConditionBase):
                 result_report.add(StepResult.INFO, f"{pre_case}没有执行")
                 return False
         result_report.add(StepResult.INFO, self.get_description())
+        return True
 
     def get_description(self):
         return "前置测试用例运行结果必须为通过"

@@ -63,6 +63,8 @@ class ResultNode:
         if self.type == NodeType.Other:
             # 对于类型是非case或者是step的节点，不作状态设置
             return
+        if status == StepResult.INFO:
+            return
         if self.status in [StepResult.INFO, StepResult.PASS]:
             self.status = status
         self.parent.set_status(status)
